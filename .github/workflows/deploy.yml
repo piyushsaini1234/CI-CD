@@ -27,18 +27,22 @@ jobs:
 
       - name: Create deployment package
         run: |
-        mkdir -p deploy
+          mkdir -p deploy
 
-        cp index.js deploy/
-        cp package.json deploy/
-        cp package-lock.json deploy/
-        cp ecosystem.config.cjs deploy/
+          cp index.js deploy/
+          cp package.json deploy/
+          cp package-lock.json deploy/
+          cp ecosystem.config.cjs deploy/
 
-        if [ -f .env.example ]; then
-        cp .env.example deploy/
-        fi
+          if [ -d src ]; then
+            cp -r src deploy/
+          fi
 
-        tar -czf deploy.tar.gz -C deploy .
+          if [ -f .env.example ]; then
+            cp .env.example deploy/
+          fi
+
+          tar -czf deploy.tar.gz -C deploy .
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
