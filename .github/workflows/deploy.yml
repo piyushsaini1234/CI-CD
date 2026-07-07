@@ -25,16 +25,20 @@ jobs:
       - name: Verify application
         run: npm test --if-present
 
-      - name: Create deployment package (without node_modules)
+      - name: Create deployment package
         run: |
-          mkdir -p deploy
-          cp -r dist deploy/
-          cp -r src deploy/
-          cp package*.json deploy/
-          cp ecosystem.config.cjs deploy/
-          # Copy .env.example if exists
-          [ -f .env.example ] && cp .env.example deploy/ || echo "No .env.example found"
-          tar -czf deploy.tar.gz -C deploy .
+        mkdir -p deploy
+
+        cp index.js deploy/
+        cp package.json deploy/
+        cp package-lock.json deploy/
+        cp ecosystem.config.cjs deploy/
+
+        if [ -f .env.example ]; then
+        cp .env.example deploy/
+        fi
+
+        tar -czf deploy.tar.gz -C deploy .
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
